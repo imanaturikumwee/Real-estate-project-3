@@ -1,0 +1,120 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Represents an authenticated user profile in the digital estate.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "fullName": { "type": "string", "description": "Full name of the user" },
+        "email": { "type": "string", "format": "email", "description": "User email address" },
+        "role": { "type": "string", "enum": ["buyer", "tenant", "owner", "agent", "staff"], "description": "User account role" },
+        "phone": { "type": "string", "description": "Phone number" },
+        "avatar": { "type": "string", "description": "Avatar image URL" },
+        "createdAt": { "type": "string", "description": "Creation timestamp" }
+      },
+      "required": ["uid", "fullName", "email", "role"]
+    },
+    "Property": {
+      "title": "Property",
+      "description": "Represents a luxury architectural estate or plot in Rwanda.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique property identifier" },
+        "title": { "type": "string", "description": "Headline property title" },
+        "price": { "type": "number", "description": "Price in USD" },
+        "location": { "type": "string", "description": "Specific location or address" },
+        "district": { "type": "string", "description": "Kigali district e.g. Nyarutarama, Rebero, Gacuriro, Kibagabaga, Bugesera" },
+        "bedrooms": { "type": "number", "description": "Number of bedrooms" },
+        "bathrooms": { "type": "number", "description": "Number of bathrooms" },
+        "areaSqM": { "type": "number", "description": "Total area in square meters" },
+        "type": { "type": "string", "enum": ["House", "Villa", "Penthouse", "Land", "Commercial"], "description": "Estate category" },
+        "status": { "type": "string", "enum": ["Active", "Pending Approval", "Sold"], "description": "Listing status" },
+        "imageUrl": { "type": "string", "description": "Main photography URL" },
+        "description": { "type": "string", "description": "Architectural and investment narrative" },
+        "aiPropertyScore": { "type": "number", "description": "Proprietary AI score out of 100" },
+        "growthPotential": { "type": "string", "description": "e.g. +12.4% /yr" },
+        "riskLevel": { "type": "string", "description": "e.g. Very Low, Low, Moderate" },
+        "views": { "type": "number", "description": "Number of page views" },
+        "leads": { "type": "number", "description": "Number of client leads" },
+        "ownerId": { "type": "string", "description": "Owner user UID" },
+        "createdAt": { "type": "string", "description": "Listing date" }
+      },
+      "required": ["id", "title", "price", "location", "type", "imageUrl"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Direct concierge chat session between a client and an expert real estate consultant.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Conversation ID" },
+        "participants": { "type": "array", "description": "User IDs involved in chat" },
+        "agentName": { "type": "string", "description": "Consultant name e.g. Agent Dany" },
+        "agentAvatar": { "type": "string", "description": "Agent avatar URL" },
+        "agentRole": { "type": "string", "description": "e.g. Expert Consultant • Kigali District" },
+        "agentStatus": { "type": "string", "description": "ONLINE or offline" },
+        "propertyTitle": { "type": "string", "description": "Property under discussion" },
+        "propertyPrice": { "type": "string", "description": "Price string" },
+        "propertyImage": { "type": "string", "description": "Property thumbnail" },
+        "lastMessage": { "type": "string", "description": "Snippet of last message" },
+        "lastMessageTime": { "type": "string", "description": "Timestamp string" },
+        "unreadCount": { "type": "number", "description": "Number of unread messages" }
+      },
+      "required": ["id", "participants", "agentName"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "A single chat message within a concierge conversation.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Message ID" },
+        "conversationId": { "type": "string", "description": "Parent conversation ID" },
+        "senderId": { "type": "string", "description": "UID of sender" },
+        "senderName": { "type": "string", "description": "Sender display name" },
+        "senderAvatar": { "type": "string", "description": "Avatar URL" },
+        "senderRole": { "type": "string", "enum": ["user", "agent", "system"], "description": "Sender role" },
+        "text": { "type": "string", "description": "Message text content" },
+        "time": { "type": "string", "description": "Time string e.g. 14:25" },
+        "aiInsightCard": { "type": "object", "description": "Optional embedded AI Property Insight card" }
+      },
+      "required": ["id", "conversationId", "senderId", "text", "time"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "System or user alert such as viewing bookings, price drops, or chat updates.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Notification ID" },
+        "userId": { "type": "string", "description": "Target recipient UID" },
+        "title": { "type": "string", "description": "Notification headline" },
+        "message": { "type": "string", "description": "Detailed alert copy" },
+        "type": { "type": "string", "enum": ["inquiry", "viewing", "price_drop", "system"], "description": "Notification kind" },
+        "read": { "type": "boolean", "description": "Whether alert has been viewed" },
+        "time": { "type": "string", "description": "Time format" }
+      },
+      "required": ["id", "userId", "title", "message"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles and account settings"
+    },
+    "/properties/{propertyId}": {
+      "schema": { "$ref": "#/entities/Property" },
+      "description": "Curated real estate listings and investment holdings"
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "Active concierge chat channels"
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Chronological messages within a conversation"
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "User notifications and account updates"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Emma & Dany - The Digital Estate",
+  "description": "Curated architectural masterpieces and luxury estates in Rwanda. Featuring real-time expert concierge, AI property intelligence, and estate portfolio management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
